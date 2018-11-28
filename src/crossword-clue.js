@@ -7,7 +7,7 @@ const getAnswers = ({ length, letters, shape }) => {
     return [];
   }
   const characterClass = `[${letters}]`
-  const pattern = shape ? shape.replace(/\./, characterClass) : characterClass.repeat(length)
+  const pattern = shape ? shape.replace(/\./g, characterClass) : characterClass.repeat(length)
 
   console.log('pattern', pattern)
   const regex = new RegExp(`^${pattern}$`)
@@ -25,9 +25,9 @@ class CrosswordClue extends Component {
   }
 
   solve = () => {
-    const length = Number(this.lengthRef.current.value) || 8
-    const letters = this.lettersRef.current.value || 'asdfsdfghndrsteragsdf'
-    const shape = this.shapeRef.current.value
+    const length = Number(this.lengthRef.current.value)
+    const letters = this.lettersRef.current.value || 'qwertyuiopasdfghjklzxcvbnm'
+    const shape = this.shapeRef.current.value || '.'.repeat(length)
 
     const answers = getAnswers({
       length,
@@ -40,11 +40,16 @@ class CrosswordClue extends Component {
 
   render() {
     return (
-      <div>
+      <div style={{
+        display: 'grid',
+        gridTemplateColumns: '1fr',
+        gridGap: '1em',
+        fontSize: '2em',
+      }}>
         <div>
           <label>
           Length
-            <input type="number" ref={this.lengthRef} />
+            <input type="number" ref={this.lengthRef} defaultValue={8} />
           </label>
         </div>
         <div>
@@ -63,9 +68,14 @@ class CrosswordClue extends Component {
           <input type="submit" onClick={this.solve} value="Solve" />
         </div>       
         {this.state.answers && (
-          <ul>
+          <ul style={{
+            gridAutoColumns: 'min-content',
+            gridTemplateColumns: 'repeat( auto-fill, minmax(5em, 1fr) )',
+            display: 'grid',
+            gridGap: '2em',
+          }}>
             {this.state.answers.map(answer => (
-              <li>{answer}</li>
+              <div>{answer}</div>
             ))}
           </ul>
         )}
